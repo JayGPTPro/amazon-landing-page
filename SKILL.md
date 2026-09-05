@@ -165,11 +165,15 @@ Create `index.html`. Sections in this order, each with an id:
    Amazon, and one that is true for this product). Image side: main image with a slow
    float, one or two floating spec chips that quote real specs, and a thumbnail row that
    swaps the main image.
-3. **Spec marquee or stat strip**: 4 to 6 numbers or specs from the listing (capacity,
-   rating, review count, size, pieces). Counters animate once on scroll.
+3. **Proof line, not a stat strip.** No row of big counters ("60W / 8h / 4.8 stars"). Every AI
+   landing page has one and it reads as filler. If the product has one number that sells it,
+   put that number inside the feature that earns it, in a sentence. Rating and review count
+   live in the hero and in the reviews section, nowhere else.
 4. **Features** (`id="features"`): 5 to 6 features rewritten from the bullets, short
-   title plus one sentence each. Use the direction's grid (bento with one large tile, or
-   3-column cards with a numbered mono label). Icons are inline SVG, never an icon font.
+   title plus one sentence each. Not a grid of equal cards. Give the strongest feature its
+   own full-width moment (a large image beside big type, or a bento tile that spans two
+   columns), then the rest smaller. Where the listing has an infographic for a feature, use
+   it as that feature's image. Icons are inline SVG, never an icon font.
 5. **In the box / detail**: an image beside a checklist, from the bullets and the details
    table. Include dimensions and materials when the listing has them.
 6. **Gallery** (`id="gallery"`): every product image, masonry or 3-column, hover zoom.
@@ -191,6 +195,26 @@ Create `index.html`. Sections in this order, each with an id:
 11. **Footer**: brand mark, section links, disclaimer: "Independent product page. [Brand]
     is a registered trademark of its owner. Purchase fulfilled by Amazon.com."
 12. **Sticky mobile bar**: price plus Buy button, appears after the hero scrolls out.
+
+Design ambition, before the technical rules. A page that passes QA can still be flat. Read
+the finished layout against these and fix what fails:
+
+- **Rhythm.** No two consecutive sections share a background tone or a layout shape. Dark,
+  paper, full-bleed photo, paper, dark. Two columns, then one, then a grid, then a band.
+- **One full-bleed photo section.** The best lifestyle image from the listing, edge to edge,
+  with a short line of display type on it and nothing else. This is the breath in the page.
+- **Scale contrast.** At least one headline at 5rem or more, and body copy that stays at 17
+  to 19px. Big and small next to each other is what makes a page feel designed.
+- **Asymmetry somewhere.** A headline that overlaps the edge of an image, a card that sits
+  off the grid, a photo that bleeds off the right edge while the copy sits in the grid.
+- **The product in the copy's color.** Pull one image out of its white background with a
+  soft drop shadow or place it on a tinted plate, so the product sits IN the page instead
+  of on top of it.
+- **Whitespace as a material.** 96 to 128px between sections on desktop. Cramped is the
+  first thing an eye reads as cheap.
+- **Details that only a person would add.** A mono label with the ASIN or the pack's
+  capacity in the corner of the hero. A hand-set pull quote. A tiny drawn icon that matches
+  the product, not a generic one.
 
 Technical rules:
 
@@ -217,6 +241,8 @@ Technical rules:
    - No em or en dash anywhere: `grep -c "—\|–" index.html` must print 0.
    - The reveal classes do not hide content when JS runs late (scroll to the bottom, all
      sections visible).
+   - No infographic is cropped by a bleed or a negative margin; every callout at its edges
+     is readable. Full-bleed photos show no baked-in text panel.
    - The page does not look like the last page you built. If it does, the direction in
      DESIGN.md was not followed; fix the page, not the brief.
 3. Fix what you found. Do not report "done" with a known defect.

@@ -74,7 +74,8 @@ ease with different delays. Hidden under `sm`.
 
 **Spec marquee**. A full-width band in the brand color under the hero, mono uppercase,
 6 specs separated by slashes, scrolling 30s linear, duplicated once for the loop, paused
-on hover. The single loop on the page; everything else plays once.
+on hover. The single loop on the page; everything else plays once. This is the ONLY place
+a row of specs is allowed. Never a stat strip of big counters (see "What not to do").
 
 **Outlined numerals**. Big feature numbers with `-webkit-text-stroke` in the brand color
 at 35% and transparent fill. Pairs with a bento grid.
@@ -87,6 +88,23 @@ between two thin rules, author in mono below.
 
 **Section bands** (Pantry, Playground). Alternate paper and a deep brand-color band
 (the green of the packaging, the walnut of the board) with the copy in paper color.
+
+## 4b. What not to do
+
+- **No stat strip.** The row of four big numbers with mono labels ("60W / 8h / 4.8 stars /
+  1,046 customers") is the signature of an AI-built page. Jay killed it on sight. Numbers
+  go inside the sentence that earns them.
+- No three equal feature cards with an emoji in each.
+- No gradient text on white. No purple-on-white gradients at all.
+- No "Trusted by X customers" headline unless X comes from the listing.
+- No section that a competitor could paste onto their own page unchanged.
+- **Never crop an infographic.** Amazon secondary images carry the seller's callouts at the
+  edges; a negative margin or `object-cover` eats the labels. Infographics sit fully inside
+  the grid. Only photographs may bleed or be cropped.
+- **Full-bleed sections need a real photo.** Many "lifestyle" listing images have an
+  infographic panel baked into one third of the frame. Crop that panel off with PIL into a
+  `photo-N.jpg` before using the image edge to edge, and position the subject with
+  `object-position`.
 
 ## 5. Copy rules
 
@@ -105,7 +123,7 @@ between two thin rules, author in mono below.
 - Reveal on scroll (fade up 30px, 0.8s, `cubic-bezier(.16,.8,.3,1)`), hero copy from the
   left and product from the right. Gated behind `html.js-anim` so nothing is hidden when
   JS fails. Honor `prefers-reduced-motion`.
-- Counters count up once when the stat strip enters the viewport.
+- No counters. Numbers sit still inside sentences.
 - CTA: soft pulse ring in the brand color, 2.6s.
 - Product image: slow float, 6s, 14px.
 - Nothing else loops. Motion is seasoning.
@@ -113,7 +131,7 @@ between two thin rules, author in mono below.
 ## 7. The Maelstrom skeleton (reference)
 
 Order that worked: nav (pill, blurred), dark hero with spotlight and chips, spec marquee,
-stat strip on paper with contours, bento features, in-the-box beside an infographic image,
+bento features, in-the-box beside an infographic image,
 gallery, dark VIP band, reviews on cards with a big real count, FAQ, final band, footer,
 sticky mobile bar. Each section 80 to 112px of vertical padding, alternating paper tones
 so the eye never sees two identical backgrounds in a row.
