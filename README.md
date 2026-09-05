@@ -39,3 +39,13 @@ Colors and typography are chosen per brand and product category, not from a fixe
 MIT. Use it, change it, ship it.
 
 Built by [Jay Margaliot](https://jaygptpro.com).
+
+## What changed in v2 (September 2026)
+
+The skill now writes a design brief before it builds: a direction chosen for the product
+(Expedition, Atelier, Playground, Lab, Pantry, Boutique, Workshop), a type pairing with
+character, a palette pulled from the product images, and one signature visual device. The
+patterns come from the best pages it has produced and live in `references/design-playbook.md`.
+It also handles two Amazon traps found in testing: converted foreign-currency prices when the
+item cannot ship to your country, and 500px images from the thumbnail strip (it now pulls the
+1500px set), and it runs a QA pass before handing the page over.
