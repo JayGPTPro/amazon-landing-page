@@ -16,6 +16,16 @@ distinctive type pairing, a palette pulled from the product itself, one signatur
 device, and copy that sounds like a person. Read `references/design-playbook.md` before
 you write a line of HTML. It holds the patterns that made the best pages good.
 
+Building it in one pass is not how the good ones happen. Phase 5 gets a correct page.
+**Phase 6 is where it becomes worth shipping, and it is not optional.**
+
+**Reference build: `B08V4PTCMR`, the Ortizan X10 speaker in pink.** That is the standard.
+Its first draft was clean and forgettable. The elevation pass gave it a hero that arrives
+in eight staggered beats, a signature light ring built from the product's own RGB feature
+and reused at three sizes, grain and mesh under the colour, a bento feature grid, a
+filmstrip gallery, and a near black section for the light show. Same data, same product,
+same reviews. If your finished page would not sit next to that one, you stopped at Phase 5.
+
 ## Requirements
 
 - **Chrome MCP is required.** Test it first. If it is not available, stop and tell the user
@@ -223,14 +233,108 @@ Technical rules:
 - Custom CSS in one `<style>`: reveal classes gated behind a `js-anim` class on `<html>`
   so content is never stuck invisible, `prefers-reduced-motion` respected, the signature
   device, the CTA pulse, the accordion.
-- All JavaScript at the bottom: gallery swap, counters, reveal observer, accordion, nav
-  state on scroll, sticky bar, email form.
+- All JavaScript at the bottom: gallery swap, scroll reveal, accordion, nav state on
+  scroll, sticky bar, email form.
+- Scroll reveal is a `requestAnimationFrame` throttled scroll pass, not an
+  IntersectionObserver that unobserves on first hit. Elements are removed from the list once
+  revealed, so nothing can be skipped by a fast scroll or an anchor jump:
+  ```js
+  var revealEls = Array.prototype.slice.call(document.querySelectorAll('.rv'));
+  function revealPass(){
+    for(var i = revealEls.length - 1; i >= 0; i--){
+      if(revealEls[i].getBoundingClientRect().top < window.innerHeight - 40){
+        revealEls[i].classList.add('in'); revealEls.splice(i, 1);
+      }
+    }
+  }
+  ```
+  Call it once on load, then on `scroll` and `resize` behind a rAF tick.
 - Every Amazon link: the product URL, `target="_blank" rel="noopener"`.
 - Mobile first. Test the hero at 390px in your head: headline 2.6rem, image under the copy,
   thumbs scroll horizontally, chips hidden.
 - Alt text on every image, from the listing.
 
-### Phase 6: QA before you show it
+### Phase 6: The elevation pass (do not skip this)
+
+**The page you just built is the draft, not the deliverable.** Phase 5 gets the structure,
+the real data and a defensible direction onto the screen. It reliably produces a page that
+is correct and slightly flat. The difference between "clean" and "a brand paid for this" is
+made here, and it is made on purpose, not by luck.
+
+Copy the draft to `index-v1.html` first, so the lift is visible and reversible. Then go
+back through the page and raise it two levels. Not a restyle. Each lane below changes what
+the page *does*, and each one has a concrete implementation.
+
+1. **Give the hero an entrance.** A page that fades in as one block reads as a template.
+   Stagger it: put a `.hi` class on the eyebrow, each line of the headline, the subhead, the
+   stars, the price and the CTA, each with its own `style="--d:.12s"` delay. Gate the whole
+   thing on a `loaded` class added by a double `requestAnimationFrame`, never on
+   `window.onload`, which would hold the hero hostage to the last image.
+
+   ```css
+   html.js-anim .hi{ opacity:0; transform:translateY(22px); }
+   html.js-anim.loaded .hi{ animation:rise .9s cubic-bezier(.16,.8,.3,1) forwards; animation-delay:var(--d,0s); }
+   @keyframes rise{ to{ opacity:1; transform:none; } }
+   ```
+   ```js
+   requestAnimationFrame(function(){ requestAnimationFrame(function(){
+     document.documentElement.classList.add('loaded'); }); });
+   ```
+
+2. **Build the signature device for real.** In Phase 5 it is usually a gradient and a
+   promise. Now make it out of the product itself. The Ortizan speaker has an RGB light
+   ring, so the page got an actual ring: a `conic-gradient` through the product's own light
+   colours, an animatable angle via `@property --a`, a blurred masked halo behind the
+   product, and the same ring reused at 9px as the nav mark and as a status dot. One device,
+   built once, reused three times at three sizes. That repetition is what reads as identity.
+
+   ```css
+   @property --a { syntax:'<angle>'; inherits:false; initial-value:0deg; }
+   .ring{ --a:0deg; background:conic-gradient(from var(--a), var(--hot), var(--sun), var(--cyan), var(--hot)); }
+   .halo{ background:conic-gradient(from 0deg, var(--hot), var(--sun), var(--cyan), var(--hot));
+          mask:radial-gradient(farthest-side, transparent 46%, #000 63%, #000 80%, transparent 100%);
+          filter:blur(26px); animation:spin 18s linear infinite; }
+   ```
+
+3. **Put material under the colour.** Flat hex fills are the tell. Add, in this order:
+   a mesh gradient ground (three or four soft `radial-gradient` blobs in the palette over
+   the paper colour), a grain overlay (inline SVG `feTurbulence` at `opacity:.09`,
+   `mix-blend-mode:soft-light`) on the hero and the dark sections, and `backdrop-filter`
+   glass on the nav and any floating chips. Cheap, and it is most of the perceived jump.
+
+4. **Break the equal grid.** If the features are still six cards of the same size, convert
+   to a bento: one tile spanning two columns with the strongest claim and a real image, one
+   tall tile, four normal. Give tiles a lift on hover
+   (`transform:translateY(-5px)` plus a deeper shadow) and scale the image inside to 1.04.
+
+5. **Turn the gallery into a filmstrip.** Replace the masonry with a horizontal
+   `scroll-snap-type:x mandatory` strip, numbered `lbl` captions under each frame, prev and
+   next buttons, and a progress bar that tracks `scrollLeft`. It bleeds off the right edge,
+   which is the asymmetry the page was missing.
+
+6. **Give the best feature its own room.** Find the one thing the product does that a
+   photograph cannot show and build a section for it, in the opposite tone to the rest of
+   the page. On the Ortizan that is a near black "night" section for the light show, sitting
+   between two bright ones. This is the section a competitor cannot paste onto their page.
+
+7. **Micro-interactions everywhere a finger goes.** Buttons lift 2px on hover and settle to
+   `scale(.98)` on press, with a blurred glow ring behind the primary CTA. Swap the FAQ from
+   `max-height` to `grid-template-rows:0fr` to `1fr`, which animates to the true height with
+   no magic number and no clipped answers. Thumbnails lift on hover.
+
+8. **Let the type get loud.** One display face with real character, one number face for the
+   price and the spec numerals, tracking tightened to `-.035em` at the top size. Reserve
+   gradient text for exactly one phrase in the headline. Body stays 17 to 19px.
+
+Housekeeping while you are in there: hoist any icon you repeat more than twice into an
+`<svg><symbol>` sprite at the top of the body and call it with `<use href="#star"/>`. A
+five pointed star pasted thirty times is thirty times the bytes and the first thing that
+looks generated.
+
+**The bar.** Open `index-v1.html` and `index.html` side by side. If you cannot name three
+things that changed *structurally*, you restyled instead of elevating. Go again.
+
+### Phase 7: QA before you show it
 
 1. Open `index.html` in the browser (Chrome MCP or `open index.html`).
 2. Take a full-page screenshot and LOOK at it. Then check, in this order:
@@ -245,9 +349,17 @@ Technical rules:
      is readable. Full-bleed photos show no baked-in text panel.
    - The page does not look like the last page you built. If it does, the direction in
      DESIGN.md was not followed; fix the page, not the brief.
+   - Phase 6 actually happened. `index-v1.html` exists and the two files differ by more
+     than colours.
 3. Fix what you found. Do not report "done" with a known defect.
 
-### Phase 7: Hand over
+**Judge animation only in a visible window.** A hidden or backgrounded browser pane freezes
+`requestAnimationFrame` and every CSS animation, so all your reveal and entrance elements
+measure at `opacity:0` and the page looks catastrophically broken when nothing is wrong.
+Before you believe that reading, check `document.visibilityState`. If it says `hidden`,
+front the tab and measure again rather than "fixing" working code.
+
+### Phase 8: Hand over
 
 Tell the user, in four lines: the design direction you chose and why, what the page
 contains (sections, number of real reviews used), the two things they must do before
@@ -264,3 +376,5 @@ field id for email capture), and the path. Then open the page.
 - FAQ answers come from the listing, phrased plainly. Unknown is "check the listing", not
   a guess.
 - The page should look like the brand made it, not like a template with a logo swapped.
+- Never hand over the Phase 5 draft. The elevation pass in Phase 6 is part of the job, not
+  an upsell, and `index-v1.html` is the proof it ran.

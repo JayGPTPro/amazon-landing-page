@@ -34,6 +34,17 @@ One `index.html` with Tailwind (no build step), plus a folder of downloaded prod
 
 Colors and typography are chosen per brand and product category, not from a fixed template.
 
+## The elevation pass
+
+The skill does not hand over its first draft. After the page is built and correct, it runs a
+second pass that raises it two levels: a staggered hero entrance, a signature device built
+from the product's own hardware and reused at several sizes, grain and mesh gradients under
+the flat colour, a bento feature grid, a filmstrip gallery with snap and a progress bar, a
+dark section for the one feature a photo cannot show, and micro-interactions on everything
+you can click. The draft is kept as `index-v1.html` so you can see the difference.
+
+The reference build is `B08V4PTCMR`, the Ortizan X10 speaker in pink.
+
 ## License
 
 MIT. Use it, change it, ship it.
